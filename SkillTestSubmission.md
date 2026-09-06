@@ -63,7 +63,9 @@ Green frontend server running on port 3200
 - Create a **docker-compose.yml** file that runs all services together  
 - Build and run the containers locally to verify functionality  
 
-Dockerfiles.zip
+### Docker Files
+
+https://github.com/Harika130822/HV_SkillTest_Blue-green-Deployment/tree/main/Dockerfiles
 
 ```
 docker-compose up -d
@@ -91,6 +93,9 @@ docker build -t hv_skilltest_blue-green-deployment-frontend-blue:v1 ./frontend-b
 ---
 
 ## files location /k8s/
+
+https://github.com/Harika130822/HV_SkillTest_Blue-green-Deployment/tree/main/K8s
+
 ```
 kubectl apply -f .\K8s\
 ```
