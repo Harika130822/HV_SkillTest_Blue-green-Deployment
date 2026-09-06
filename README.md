@@ -75,11 +75,34 @@ docker-compose up -d
 > ![alt text](./Screenshot/image-9.png)
 
 ```
-docker build -t hv_skilltest_blue-green-deployment-backend:v1 ./backend .
+docker build -t hv_skilltest_blue-green-deployment-backend:v1 ./backend
 docker build -t hv_skilltest_blue-green-deployment-frontend-green:v1 ./frontend-green
 docker build -t hv_skilltest_blue-green-deployment-frontend-blue:v1 ./frontend-blue
 ```
 > ![alt text](./Screenshot/image-10.png)
+
+```
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-backend:v1
+
+> registration-backend@1.0.0 start
+> node server.js
+
+Backend server running on port 5000
+Mongo DB connection established
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-frontend-green:v1
+
+> green-frontend@1.0.0 start
+> node server.js
+
+Green frontend server running on port 3200
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-frontend-blue:v1
+
+> basic-frontend@1.0.0 start
+> node server.js
+
+Basic frontend server running on port 3100
+Accessible at http://localhost:3100
+```
 
 ---
 
