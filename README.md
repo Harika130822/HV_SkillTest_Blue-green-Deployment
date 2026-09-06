@@ -88,7 +88,7 @@ PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skil
 > node server.js
 
 Backend server running on port 5000
-Mongo DB connection established
+MongoDB connected
 PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-frontend-green:v1
 
 > green-frontend@1.0.0 start
