@@ -2,3 +2,4 @@ node_modules
 Dockerfile
 .env
 package-lock.json
+K8s/secrets.yaml

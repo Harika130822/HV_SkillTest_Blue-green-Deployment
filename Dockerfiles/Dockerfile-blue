@@ -1,0 +1,7 @@
+FROM node:18-alpine
+WORKDIR /app/frontend-blue
+COPY frontend-blue/package*.json ./
+RUN npm install
+COPY frontend-blue/. .
+EXPOSE 3100
+CMD ["npm", "start"]

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-blue-deployment
+  namespace: bluegreen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-blue
+  template:
+    metadata:
+      labels:
+        app: frontend-blue
+    spec:
+      containers:
+        - name: frontend-blue
+          image: hv_skilltest_blue-green-deployment-frontend-blue:v1
+          ports:
+            - containerPort: 3100
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bluegreen-config
+                  key: PORT_BLUE
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3100
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3100
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          

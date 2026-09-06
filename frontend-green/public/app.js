@@ -139,6 +139,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     document.getElementById('registrationForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+
+      // Commit values still being typed when the user submits directly.
+      [
+        [interestInput, interestTags, interests, interestsHidden],
+        [languageInput, languageTags, languages, languagesHidden]
+      ].forEach(([input, container, values, hiddenField]) => {
+        input.value.split(',').map(value => value.trim()).filter(Boolean).forEach(value => {
+          if (!values.includes(value)) {
+            addTag(value, container, values);
+          }
+        });
+        input.value = '';
+        updateHiddenField(hiddenField, values);
+      });
       
       if (interests.length === 0 || languages.length === 0) {
         showMessage('Please add at least one interest and language', 'error');
@@ -157,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       
       try {
-        const response = await fetch('http://localhost:5000/api/users', {
+        const response = await fetch('/api/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
