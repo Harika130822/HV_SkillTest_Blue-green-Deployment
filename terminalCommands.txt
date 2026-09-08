@@ -1,0 +1,39 @@
+
+
+```
+curl.exe -i -H "Host: green.localhost" http://127.0.0.1:8080/health; curl.exe -i -H "Host: green.localhost" http://127.0.0.1:8080/api/users/count
+docker build -t hv_skilltest_blue-green-deployment-frontend-green:v1 .; 
+kubectl rollout restart deployment/frontend-green-deployment -n bluegreen; 
+kubectl rollout status deployment/frontend-green-deployment -n bluegreen
+
+docker build -f frontend-green/Dockerfile -t hv_skilltest_blue-green-deployment-frontend-green:v1 .; 
+kubectl rollout restart deployment/frontend-green-deployment -n bluegreen; 
+kubectl rollout status deployment/frontend-green-deployment -n bluegreen
+
+kubectl get pods -n bluegreen -l app=frontend-green -o wide; 
+kubectl logs deployment/frontend-green-deployment -n bluegreen --tail=15
+
+docker build --no-cache -f frontend-green/Dockerfile -t hv_skilltest_blue-green-deployment-frontend-green:v2 .; 
+kubectl apply -f "C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\K8s\frontend-green-deployment.yaml"; 
+kubectl rollout status deployment/frontend-green-deployment -n bluegreen
+
+curl.exe -sS -H "Host: green.localhost" http://127.0.0.1:8080/app.js | Select-String -Pattern "fetch\(|localhost:5000|/api/users"
+
+$json = @{ name = 'Green'; surname = 'Final'; dob = '2000-01-01'; job = 'Tester'; place = 'Local'; interests = @('testing'); knownLanguages = @('English'); registeredFrom = 'enhanced' } | ConvertTo-Json -Compress; $json | curl.exe -i -H "Host: green.localhost" -H "Content-Type: application/json" --data-binary '@-' http://127.0.0.1:8080/api/users
+
+kubectl get deployment frontend-green-deployment -n bluegreen -o jsonpath="{.spec.template.spec.containers[0].image}"; Write-Output ''; 
+kubectl get pods -n bluegreen -l app=frontend-green
+
+
+curl.exe -sS -H "Host: blue.localhost" http://127.0.0.1:8080/ | Select-String -Pattern "User Registration|Basic UI"; curl.exe -sS -H "Host: blue.localhost" http://127.0.0.1:8080/api/users/count
+curl.exe -sS -H "Host: blue.localhost" http://127.0.0.1:8080/app.js | Select-String -Pattern "fetch\(|localhost:5000|/api/users"
+kubectl get pods -n bluegreen -l app=frontend-blue -o wide; kubectl get deployment frontend-blue-deployment -n bluegreen -o jsonpath="{.spec.template.spec.containers[0].image}"; Write-Output ''
+
+$json = @{ name = 'Blue'; surname = 'Final'; dob = '2000-01-01'; job = 'Tester'; place = 'Local'; interests = @('testing'); knownLanguages = @('English'); registeredFrom = 'basic' } | ConvertTo-Json -Compress; $json | curl.exe -i -H "Host: blue.localhost" -H "Content-Type: application/json" --data-binary '@-' http://127.0.0.1:8080/api/users
+curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/health; curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/api/users/count
+kubectl logs deployment/frontend-blue-deployment -n bluegreen --tail=30; kubectl logs deployment/backend-deployment -n bluegreen --tail=30
+
+docker build --no-cache -f frontend-blue/Dockerfile -t hv_skilltest_blue-green-deployment-frontend-blue:v2 .; kubectl apply -f "C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\K8s\frontend-blue-deployment.yaml"; kubectl rollout status deployment/frontend-blue-deployment -n bluegreen
+curl.exe -sS -H "Host: blue.localhost" http://127.0.0.1:8080/ | Select-String -Pattern "fetch\(|localhost:5000|/api/users"
+kubectl get deployment frontend-blue-deployment -n bluegreen -o jsonpath="{.spec.template.spec.containers[0].image}"; Write-Output ''; kubectl get pods -n bluegreen -l app=frontend-blue
+```

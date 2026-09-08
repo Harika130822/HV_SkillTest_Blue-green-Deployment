@@ -208,6 +208,77 @@ namespace "bluegreen" deleted
 - Demonstrate a successful **blue-green deployment switch**  
 - Explain your **blue-green deployment strategy** in documentation  
 
+
+## Deploy_V1 ( http://blue.localhost:8080/ -> Displays Green Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\Deploy_V1> kubectl apply -f .
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config unchanged
+deployment.apps/frontend-blue-deployment unchanged
+service/frontend-blue-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress unchanged
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image.png)
+
+
+## Deploy_V2 (increased the Pods from 1 to 2 - frontend-blue-deployment) ( http://blue.localhost:8080/ -> Displays Green Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\Deploy_V2> kubectl apply -f .
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config unchanged
+deployment.apps/frontend-blue-deployment configured
+service/frontend-blue-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress unchanged
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image-1.png)
+
+## Deploy_V3 ( Added frontend-green-deployment) ( http://blue.localhost:8080/ -> Displays Green Registration button, http://green.localhost:8080/ -> Displays Blue Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl apply -f .\Deploy_V3\
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config configured
+deployment.apps/frontend-blue-deployment unchanged
+service/frontend-blue-service unchanged
+deployment.apps/frontend-green-deployment created
+service/frontend-green-service created
+ingress.networking.k8s.io/bluegreen-ingress configured
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image-2.png)
+
+## Deploy_V4 ( Removed frontend-blue-deployment ) ( http://blue.localhost:8080/ -> Displays Blue Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl apply -f .\Deploy_V4\
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config configured
+deployment.apps/frontend-green-deployment configured
+service/frontend-green-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress configured
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl delete -f .\Deploy_V3\frontend-blue-deployment.yaml
+deployment.apps "frontend-blue-deployment" deleted from bluegreen namespace
+service "frontend-blue-service" deleted from bluegreen namespace
+```
+> ![alt text](./Screenshot/Deploy/image-3.png)
+> ![alt text](image-4.png)
 ---
 
 ## ✅ Evaluation Criteria

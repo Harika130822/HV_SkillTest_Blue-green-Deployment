@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend-blue
-          image: hv_skilltest_blue-green-deployment-frontend-blue:v1
+          image: hv_skilltest_blue-green-deployment-frontend-blue:v2
           ports:
             - containerPort: 3100
           env:
