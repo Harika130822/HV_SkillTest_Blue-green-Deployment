@@ -1,183 +1,372 @@
-# Blue-Green Deployment Project
+# Deployment Assignment
 
-## Prerequisites
-- Docker Desktop
-- Minikube
-- kubectl
-- Helm
-- Node.js
-- Git
+---
 
-## Project Setup
+## 📑 Tasks and Marking Scheme
 
-### 1. Clone the Repository
-```bash
-git clone <your-repository-url>
-cd blue-green-project
+### Part 1: Local Deployment (10 marks)
+- Clone the repository and set up the environment  
+- Install dependencies for the backend and both frontends  
+- Configure MongoDB connection  
+- Start all services and demonstrate that they are working correctly  
+  - Backend server running and responding to health checks  
+  - Both frontends accessible and able to register users  
+  - Data successfully stored in MongoDB  
+
+```
+git clone HV_SkillTest_Blue-green-Deployment
+cd HV HV_SkillTest_Blue-green-Deployment
 ```
 
-### 2. Local Development
-
-#### Backend Setup
-1. Navigate to backend directory
-2. Install dependencies
-```bash
-cd backend
+## added .env files and ran the below commands at backend and frontend folders
+```
 npm install
-```
-3. Create `.env` file with:
-```
-PORT=5000
-MONGO_URI=your-mongodb-connection-string
-```
-4. Start backend server
-```bash
 npm start
 ```
 
-#### Frontend Setup
-1. Setup Blue Frontend
-```bash
-cd frontend-blue
-npm install
 ```
-2. Create `.env` file:
-```
-PORT=3100
-```
-3. Start blue frontend
-```bash
-npm start
-```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\backend> npm start
 
-3. Repeat similar steps for Green Frontend (with PORT=3200)
+> registration-backend@1.0.0 start
+> node server.js
 
-### 3. Dockerization
+Backend server running on port 5000
+MongoDB connected
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\frontend-blue> npm start
 
-#### Build Docker Images
-```bash
-# Build Backend Image
-docker build -t your-username/backend:v1 ./backend
+> basic-frontend@1.0.0 start
+> node server.js
 
-# Build Blue Frontend Image
-docker build -t your-username/frontend-blue:v1 ./frontend-blue
+Basic frontend server running on port 3100
+Accessible at http://localhost:3100
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\frontend-green> npm start
 
-# Build Green Frontend Image
-docker build -t your-username/frontend-green:v1 ./frontend-green
+> green-frontend@1.0.0 start
+> node server.js
+
+Green frontend server running on port 3200
 ```
 
-### 4. Kubernetes Deployment
+> ![alt text](./Screenshot/image-2.png)
+> ![alt text](./Screenshot/image.png)
+> ![alt text](./Screenshot/image-1.png)
+> ![alt text](./Screenshot/image-3.png)
+> ![alt text](./Screenshot/image-4.png)
+> ![alt text](./Screenshot/image-5.png)
+> ![alt text](./Screenshot/image-6.png)
+> ![alt text](./Screenshot/image-7.png)
+---
 
-#### Minikube Setup
-1. Start Minikube
-```bash
-minikube start
+### Part 2: Containerization (15 marks)
+- Create a **Dockerfile** for the backend service  
+- Create **Dockerfiles** for both frontend services  
+- Create a **docker-compose.yml** file that runs all services together  
+- Build and run the containers locally to verify functionality  
+
+### Docker Files
+
+https://github.com/Harika130822/HV_SkillTest_Blue-green-Deployment/tree/main/Dockerfiles
+
+```
+docker-compose up -d
+
+```
+> ![alt text](./Screenshot/image-8.png)
+> ![alt text](./Screenshot/image-9.png)
+
+```
+docker build -t hv_skilltest_blue-green-deployment-backend:v1 ./backend
+docker build -t hv_skilltest_blue-green-deployment-frontend-green:v1 ./frontend-green
+docker build -t hv_skilltest_blue-green-deployment-frontend-blue:v1 ./frontend-blue
+```
+> ![alt text](./Screenshot/image-10.png)
+
+```
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-backend:v1
+
+> registration-backend@1.0.0 start
+> node server.js
+
+Backend server running on port 5000
+MongoDB connected
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-frontend-green:v1
+
+> green-frontend@1.0.0 start
+> node server.js
+
+Green frontend server running on port 3200
+PS C:\Users\abhis\Harika\skilltest\Microservices-Task-Harika> docker run hv_skilltest_blue-green-deployment-frontend-blue:v1
+
+> basic-frontend@1.0.0 start
+> node server.js
+
+Basic frontend server running on port 3100
+Accessible at http://localhost:3100
 ```
 
-2. Enable Required Addons
-```bash
-minikube addons enable metrics-server
-minikube addons enable ingress
+---
+
+### Part 3: Kubernetes Deployment (15 marks)
+- Create Kubernetes **Deployment manifests** for all services  
+- Create **Service resources** for the applications  
+- Deploy the application to **Minikube**  
+- Configure proper **health checks** and **readiness probes**  
+- Verify that all components are working correctly in the cluster  
+
+---
+
+## files location /k8s/
+
+https://github.com/Harika130822/HV_SkillTest_Blue-green-Deployment/tree/main/K8s
+
+```
+kubectl apply -f .\K8s\
+```
+> ![alt text](./Screenshot/k8s/image-2.png)
+> ![alt text](./Screenshot/k8s/image-1.png)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl get svc -n bluegreen 
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+backend-service          ClusterIP   10.96.125.54   <none>        5000/TCP    8m59s
+frontend-blue-service    ClusterIP   10.96.155.99   <none>        3100/TCP    8m59s
+frontend-green-service   ClusterIP   10.96.77.112   <none>        3200/TCP    8m59s
+mongodb                  ClusterIP   10.96.22.51    <none>        27017/TCP   2m33s
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl get deployment -n bluegreen
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+backend-deployment          1/1     1            1           9m13s
+frontend-blue-deployment    1/1     1            1           9m13s
+frontend-green-deployment   1/1     1            1           9m13s
+mongodb-deployment          1/1     1            1           2m47s
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl get pods -n bluegreen
+NAME                                         READY   STATUS    RESTARTS   AGE
+backend-deployment-547858d868-zzmn2          1/1     Running   0          4m17s
+frontend-blue-deployment-549769c9f4-t6779    1/1     Running   0          15m
+frontend-green-deployment-56d976564c-kslcg   1/1     Running   0          15m
+mongodb-deployment-8497497774-52cxg          1/1     Running   0          9m11s
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl logs backend-deployment-547858d868-zzmn2 -n bluegreen
+
+> registration-backend@1.0.0 start
+> node server.js
+
+Backend server running on port 5000
+MongoDB connected
 ```
 
-### 5. Create Kubernetes Manifest Files
+### ingress
+```
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8080:80
+curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/health
+curl.exe -i -H "Host: green.localhost" http://127.0.0.1:8080/health
+curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/api/users/count
 
-#### Required Manifest Files
-Create following files in `k8s/` directory:
-- `backend-deployment.yaml`
-- `frontend-blue-deployment.yaml`
-- `frontend-green-deployment.yaml`
-- `frontend-service.yaml`
-- `ingress.yaml`
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/health
+HTTP/1.1 200 OK
+Date: Sun, 06 Sep 2026 11:06:09 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 85
+Connection: keep-alive
+X-Powered-By: Express
+ETag: W/"55-oC2fEU6Exf98bkE6agE4mMDkkvo"
 
-#### Service File Key Concepts
-Your `frontend-service.yaml` should:
-- Use selector to route traffic
-- Define version (blue/green)
-- Map ports correctly
+{"status":"ok","message":"Basic frontend is running","version":"basic","port":"3100"}
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> curl.exe -i -H "Host: blue.localhost" http://127.0.0.1:8080/api/users/count
+HTTP/1.1 200 OK
+Date: Sun, 06 Sep 2026 11:06:17 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 38
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+ETag: W/"26-QQtI/VJvVHafKwyUFL6UnPGetoA"
 
-### 6. Deploy to Minikube
-```bash
-# Apply all manifests
-kubectl apply -f k8s/
-
-# Verify deployments
-kubectl get deployments
-kubectl get services
-kubectl get pods
+{"total":5,"basicUI":2,"enhancedUI":3}
 ```
 
-### 7. Blue-Green Switching
-
-#### Switch Traffic Methods
-
-1. Basic Patch Command
-```bash
-# Switch to Green
-kubectl patch service frontend-service -p '{"spec":{"selector":{"version":"green"}}}'
-
-# Switch back to Blue
-kubectl patch service frontend-service -p '{"spec":{"selector":{"version":"blue"}}}'
+## port already in use
+```
+Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,OwningProcess
+Stop-Process -Id 26764 -Force
 ```
 
-2. Detailed Patch Command
-```bash
-kubectl patch service frontend-service --type='merge' -p '{
-  "spec":{
-    "selector":{
-      "app":"frontend",
-      "version":"green"
-    }
-  }
-}'
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl describe ingress bluegreen-ingress -n bluegreen
+Name:             bluegreen-ingress
+Labels:           <none>
+Namespace:        bluegreen
+Address:          localhost
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host             Path  Backends
+  ----             ----  --------
+  blue.localhost   
+                   /api   backend-service:5000 (10.244.0.22:5000)
+                   /      frontend-blue-service:3100 (10.244.0.23:3100)
+  green.localhost  
+                   /api   backend-service:5000 (10.244.0.22:5000)
+                   /      frontend-green-service:3200 (10.244.0.24:3200)
+Annotations:       <none>
+Events:
+  Type    Reason  Age                  From                      Message
+  ----    ------  ----                 ----                      -------
+  Normal  Sync    2m55s (x3 over 21m)  nginx-ingress-controller  Scheduled for sync
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> 
+```
+> ![alt text](./Screenshot/k8s/image.png)
+> ![alt text](./Screenshot/k8s/image-3.png)
+
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl delete -f .\K8s\
+deployment.apps "backend-deployment" deleted from bluegreen namespace
+configmap "bluegreen-config" deleted from bluegreen namespace
+deployment.apps "frontend-blue-deployment" deleted from bluegreen namespace
+deployment.apps "frontend-green-deployment" deleted from bluegreen namespace
+service "frontend-blue-service" deleted from bluegreen namespace
+service "frontend-green-service" deleted from bluegreen namespace
+service "backend-service" deleted from bluegreen namespace
+ingress.networking.k8s.io "bluegreen-ingress" deleted from bluegreen namespace
+deployment.apps "mongodb-deployment" deleted from bluegreen namespace
+service "mongodb" deleted from bluegreen namespace
+namespace "bluegreen" deleted
 ```
 
-### 8. Verification
-- Check service endpoints
-- Verify traffic routing
-- Monitor application logs
+### Part 4: Blue-Green Deployment Implementation (10 marks)
+- Create two separate deployments for the **basic** and **enhanced** frontends  
+- Implement a service that can switch between the two frontend versions  
+- Demonstrate a successful **blue-green deployment switch**  
+- Explain your **blue-green deployment strategy** in documentation  
 
-### Troubleshooting
-- `kubectl get pods` - Check pod status
-- `kubectl logs <pod-name>` - View logs
-- `kubectl describe service frontend-service` - Service details
 
-### Cleanup
-```bash
-# Remove deployments
-kubectl delete -f k8s/
-
-# Stop Minikube
-minikube stop
+## Deploy_V1 ( http://blue.localhost:8080/ -> Displays Green Registration button)
 ```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\Deploy_V1> kubectl apply -f .
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config unchanged
+deployment.apps/frontend-blue-deployment unchanged
+service/frontend-blue-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress unchanged
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image.png)
 
-## Blue-Green Deployment Flow Chart
+
+## Deploy_V2 (increased the Pods from 1 to 2 - frontend-blue-deployment) ( http://blue.localhost:8080/ -> Displays Green Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment\Deploy_V2> kubectl apply -f .
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config unchanged
+deployment.apps/frontend-blue-deployment configured
+service/frontend-blue-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress unchanged
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image-1.png)
+
+## Deploy_V3 ( Added frontend-green-deployment) ( http://blue.localhost:8080/ -> Displays Green Registration button, http://green.localhost:8080/ -> Displays Blue Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl apply -f .\Deploy_V3\
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config configured
+deployment.apps/frontend-blue-deployment unchanged
+service/frontend-blue-service unchanged
+deployment.apps/frontend-green-deployment created
+service/frontend-green-service created
+ingress.networking.k8s.io/bluegreen-ingress configured
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+```
+> ![alt text](./Screenshot/Deploy/image-2.png)
+
+## Deploy_V4 ( Removed frontend-blue-deployment ) ( http://blue.localhost:8080/ -> Displays Blue Registration button)
+```
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl apply -f .\Deploy_V4\
+deployment.apps/backend-deployment unchanged
+service/backend-service unchanged
+configmap/bluegreen-config configured
+deployment.apps/frontend-green-deployment configured
+service/frontend-green-service unchanged
+ingress.networking.k8s.io/bluegreen-ingress configured
+deployment.apps/mongodb-deployment unchanged
+service/mongodb unchanged
+namespace/bluegreen unchanged
+secret/bluegreen-secret unchanged
+PS C:\Users\abhis\Harika\skilltest\HV_SkillTest_Blue-green-Deployment> kubectl delete -f .\Deploy_V3\frontend-blue-deployment.yaml
+deployment.apps "frontend-blue-deployment" deleted from bluegreen namespace
+service "frontend-blue-service" deleted from bluegreen namespace
+```
+> ![alt text](./Screenshot/Deploy/image-3.png)
+> ![alt text](image-4.png)
+---
+
+## Deployment Evolution
 
 ```mermaid
-graph TD
-    A[Blue Environment Running] -->|Deploy Green| B[Green Environment Prepared]
-    B -->|Validate Green| C{Green Ready?}
-    C -->|Yes| D[Update Service Selector]
-    C -->|No| B
-    D -->|Redirect Traffic| E[Green Now Active]
-    E -->|Rollback Option| A
+flowchart LR
+  V1["Deploy_V1<br/>Blue frontend active<br/>blue.localhost -> frontend-blue-service"]
+  V2["Deploy_V2<br/>Blue frontend scaled<br/>Frontend replicas: 1 -> 2"]
+  V3["Deploy_V3<br/>Green frontend added<br/>Blue and Green run in parallel"]
+  V4["Deploy_V4<br/>Traffic switched<br/>blue.localhost -> frontend-green-service"]
+
+  V1 --> V2 --> V3 --> V4
 ```
 
-### Flow Explanation
-1. Blue environment is initial production
-2. Green environment deployed alongside
-3. Validate green environment 
-4. Update service selector
-5. Redirect traffic to green
-6. Blue remains as rollback option
+## Traffic Flow by Version
 
-## Best Practices
-- Implement health checks
-- Use resource limits
-- Configure monitoring
-- Validate before switching
-- Maintain rollback strategy
+```mermaid
+sequenceDiagram
+  participant User as Browser
+  participant Ingress as NGINX Ingress
+  participant Blue as Blue Frontend
+  participant Green as Green Frontend
+  participant API as Backend API
+  participant DB as MongoDB
 
+  Note over User,DB: Deploy_V1
+  User->>Ingress: blue.localhost/
+  Ingress->>Blue: frontend-blue-service:3100
+  Blue-->>User: Basic registration UI
 
-## License
-This project is licensed under the MIT License
+  Note over User,DB: Deploy_V2
+  User->>Ingress: blue.localhost/
+  Ingress->>Blue: frontend-blue-service:3100
+  Blue-->>User: Basic UI served by two replicas
+
+  Note over User,DB: Deploy_V3
+  User->>Ingress: blue.localhost/
+  Ingress->>Blue: frontend-blue-service:3100
+  User->>Ingress: green.localhost/
+  Ingress->>Green: frontend-green-service:3200
+  Blue-->>User: Basic UI
+  Green-->>User: Enhanced UI
+
+  Note over User,DB: Registration request
+  User->>Ingress: POST /api/users
+  Ingress->>API: backend-service:5000
+  API->>DB: Save user document
+  DB-->>API: Confirmation
+  API-->>User: Registration successful
+
+  Note over User,DB: Deploy_V4
+  User->>Ingress: blue.localhost/
+  Ingress->>Green: frontend-green-service:3200
+  Green-->>User: Enhanced UI
+```
+
+In Deploy_V4, the backend and MongoDB remain unchanged. Only the Ingress route changes: traffic for `blue.localhost` moves from `frontend-blue-service` on port `3100` to `frontend-green-service` on port `3200`.
+
+## ✅ Evaluation Criteria
+- **Functionality:** All services running and accessible  
+- **Containerization:** Proper Docker setup and orchestration with docker-compose  
+- **Kubernetes:** Correct manifests, services, and cluster validation  
+- **Blue-Green Deployment:** Clear demonstration and documentation of strategy  
