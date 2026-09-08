@@ -4,7 +4,7 @@
 
 ## 📑 Tasks and Marking Scheme
 
-### Part 1: Local Deployment (10 marks)
+# Part 1: Local Deployment (10 marks)
 - Clone the repository and set up the environment  
 - Install dependencies for the backend and both frontends  
 - Configure MongoDB connection  
@@ -57,7 +57,7 @@ Green frontend server running on port 3200
 > ![alt text](./Screenshot/image-7.png)
 ---
 
-### Part 2: Containerization (15 marks)
+# Part 2: Containerization (15 marks)
 - Create a **Dockerfile** for the backend service  
 - Create **Dockerfiles** for both frontend services  
 - Create a **docker-compose.yml** file that runs all services together  
@@ -106,7 +106,7 @@ Accessible at http://localhost:3100
 
 ---
 
-### Part 3: Kubernetes Deployment (15 marks)
+# Part 3: Kubernetes Deployment (15 marks)
 - Create Kubernetes **Deployment manifests** for all services  
 - Create **Service resources** for the applications  
 - Deploy the application to **Minikube**  
@@ -182,7 +182,7 @@ ETag: W/"26-QQtI/VJvVHafKwyUFL6UnPGetoA"
 {"total":5,"basicUI":2,"enhancedUI":3}
 ```
 
-## port already in use
+### port already in use
 ```
 Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalAddress,LocalPort,OwningProcess
 Stop-Process -Id 26764 -Force
@@ -230,7 +230,7 @@ service "mongodb" deleted from bluegreen namespace
 namespace "bluegreen" deleted
 ```
 
-### Part 4: Blue-Green Deployment Implementation (10 marks)
+# Part 4: Blue-Green Deployment Implementation (10 marks)
 - Create two separate deployments for the **basic** and **enhanced** frontends  
 - Implement a service that can switch between the two frontend versions  
 - Demonstrate a successful **blue-green deployment switch**  
@@ -306,7 +306,7 @@ deployment.apps "frontend-blue-deployment" deleted from bluegreen namespace
 service "frontend-blue-service" deleted from bluegreen namespace
 ```
 > ![alt text](./Screenshot/Deploy/image-3.png)
-> ![alt text](image-4.png)
+> ![alt text](./Screenshot/Deploy/image-4.png)
 ---
 
 ## Deployment Evolution
@@ -365,8 +365,3 @@ sequenceDiagram
 
 In Deploy_V4, the backend and MongoDB remain unchanged. Only the Ingress route changes: traffic for `blue.localhost` moves from `frontend-blue-service` on port `3100` to `frontend-green-service` on port `3200`.
 
-## ✅ Evaluation Criteria
-- **Functionality:** All services running and accessible  
-- **Containerization:** Proper Docker setup and orchestration with docker-compose  
-- **Kubernetes:** Correct manifests, services, and cluster validation  
-- **Blue-Green Deployment:** Clear demonstration and documentation of strategy  
